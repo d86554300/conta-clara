@@ -1,5 +1,15 @@
 # Conta Clara
 
+## Plaid Sandbox via MCP
+
+Na branch `feature/plaid-sandbox-mcp`, selecione **Plaid Sandbox** no chat e clique em conectar. O backend cria um Item de teste First Platypus Bank e consulta contas e transações pelo servidor MCP local `mcp/plaid.mjs`. Configure `PLAID_CLIENT_ID` e `PLAID_SECRET` de Sandbox em `.env.local` e execute `npm install` e `npm run dev`.
+
+Fluxo: navegador → rotas Next.js → cliente MCP STDIO → ferramentas do servidor MCP local → API Plaid Sandbox. Esse servidor é próprio do projeto; não reutiliza o login OAuth do MCP do Codex. A Pluggy continua usando REST.
+
+O access token Plaid fica em memória no backend, associado a um cookie HttpOnly com duração de 24 horas. Reiniciar o servidor exige reconectar. Esta implementação exige Node.js com suporte a subprocessos; não funciona em Edge e precisa de armazenamento compartilhado antes de operar em múltiplas instâncias. Use somente dados de teste neste MVP.
+
+Cada pergunta busca dados do provedor selecionado. Saldos são apresentados por conta e moeda, sem conversão; transações Plaid cobrem o último ano, com paginação. Valores positivos na Plaid são débitos. O filtro “este mês” restringe o período. `PRODUCT_NOT_READY` indica que as transações ainda estão sendo preparadas: tente novamente depois. As respostas suportam saldo, gastos e transações por regras; não há modelo de linguagem no chat.
+
 Assistente financeiro em formato de chat, construído em Next.js sem Lovable. O protótipo responde em português sobre saldo, contas e transações usando dados fictícios inspirados no Plaid Sandbox.
 
 ## Rodar localmente
