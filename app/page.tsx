@@ -1,7 +1,13 @@
 'use client';
 
 import { FormEvent, useEffect, useState } from 'react';
-import { PluggyConnect } from 'react-pluggy-connect';
+import dynamic from 'next/dynamic';
+
+// The widget's zoid dependency accesses window during module initialization.
+const PluggyConnect = dynamic(
+  () => import('react-pluggy-connect').then(module => module.PluggyConnect),
+  { ssr: false }
+);
 
 type Message = { role: 'user' | 'assistant'; text: string };
 type Account = { id: string; name?: string; type?: string; subtype?: string; balance?: number; currencyCode?: string };
